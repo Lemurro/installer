@@ -1,7 +1,6 @@
 {
   "name": "lemurro/installer",
   "description": "Lemurro Installer",
-  "type": "project",
   "license": "MIT",
   "authors": [
     {
