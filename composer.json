@@ -1,0 +1,33 @@
+{
+  "name": "lemurro/installer",
+  "description": "Lemurro Installer",
+  "type": "project",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Dmitrii Shcherbakov",
+      "email": "info@bestion.ru",
+      "homepage": "http://bestion.ru",
+      "role": "Developer"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Lemurro\\Installer\\": "src/"
+    }
+  },
+  "bin": [
+    "bin/lemurro"
+  ],
+  "require": {
+    "php": ">=7.0.0",
+    "ext-zip": "*",
+    "symfony/console": "^4.2",
+    "guzzlehttp/guzzle": "^6.3",
+    "symfony/filesystem": "^4.2",
+    "symfony/process": "^4.2"
+  },
+  "require-dev": {
+    "symfony/var-dumper": "^3.3"
+  }
+}

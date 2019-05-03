@@ -1,0 +1,23 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Консольное приложение
+ *
+ * @version 02.05.2019
+ * @author  Дмитрий Щербаков <atomcms@ya.ru>
+ */
+
+use Lemurro\Installer\NewCommand;
+use Symfony\Component\Console\Application;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+try {
+    $command = new NewCommand();
+    $app = new Application('Lemurro Installer', 'v1.0.0');
+
+    $app->add($command);
+    $app->run();
+} catch (Exception $e) {
+    echo $e->getFile() . ' (line ' . $e->getLine() . '): ' . $e->getMessage();
+}
