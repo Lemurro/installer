@@ -3,10 +3,11 @@
 /**
  * Консольное приложение
  *
- * @version 02.05.2019
+ * @version 13.05.2019
  * @author  Дмитрий Щербаков <atomcms@ya.ru>
  */
 
+use Lemurro\Installer\Config;
 use Lemurro\Installer\NewCommand;
 use Symfony\Component\Console\Application;
 
@@ -14,7 +15,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 try {
     $command = new NewCommand();
-    $app = new Application('Lemurro Installer', 'v1.0.0');
+    $app = new Application('Lemurro Installer', Config::VERSION);
 
     $app->add($command);
     $app->run();

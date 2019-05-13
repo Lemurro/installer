@@ -2,7 +2,7 @@
 /**
  * Основная команда
  *
- * @version 02.05.2019
+ * @version 13.05.2019
  * @author  Дмитрий Щербаков <atomcms@ya.ru>
  */
 
@@ -153,7 +153,7 @@ class NewCommand extends Command
      *
      * @return void
      *
-     * @version 02.05.2019
+     * @version 13.05.2019
      * @author  Дмитрий Щербаков <atomcms@ya.ru>
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -178,7 +178,7 @@ class NewCommand extends Command
             ' | |__|  __/ | | | | | |_| | |  | | | (_) |',
             ' |_____\___|_| |_| |_|\__,_|_|  |_|  \___/ ',
             '',
-            'Lemurro Installer v1.0.0',
+            'Lemurro Installer ' . Config::VERSION,
             '',
             '<info>Install Lemurro:</info>',
             '<info>  Project name</info> = <comment>' . $this->arg_name . '</comment>',
