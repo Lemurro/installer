@@ -18,7 +18,12 @@
   "bin": [
     "bin/lemurro"
   ],
+  "config": {
+    "sort-packages": true
+  },
   "require": {
+    "ext-zip": "*",
+    "guzzlehttp/guzzle": "~6.3",
     "php": ">=7.0.0",
     "symfony/console": "~4.3",
     "symfony/filesystem": "~4.3",
