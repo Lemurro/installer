@@ -3,7 +3,7 @@
 /**
  * Консольное приложение
  *
- * @version 13.05.2019
+ * @version 18.06.2019
  * @author  Дмитрий Щербаков <atomcms@ya.ru>
  */
 
@@ -11,7 +11,18 @@ use Lemurro\Installer\Config;
 use Lemurro\Installer\NewCommand;
 use Symfony\Component\Console\Application;
 
-require __DIR__ . '/../vendor/autoload.php';
+$global_vendor = __DIR__ . '/../../../autoload.php';
+$project_vendor = __DIR__ . '/../vendor/autoload.php';
+
+if (file_exists($global_vendor)) {
+    require_once $global_vendor;
+} else {
+    if (file_exists($project_vendor)) {
+        require_once $project_vendor;
+    } else {
+        die('Impossible to load Lemurro, missing vendor/');
+    }
+}
 
 try {
     $command = new NewCommand();
