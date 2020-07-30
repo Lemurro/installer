@@ -1,9 +1,11 @@
 <?php
+
 /**
  * Основная команда
  *
- * @version 13.05.2019
  * @author  Дмитрий Щербаков <atomcms@ya.ru>
+ *
+ * @version 30.07.2019
  */
 
 namespace Lemurro\Installer;
@@ -28,9 +30,6 @@ use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
  * Class NewCommand
  *
  * @package Lemurro\Installer
- *
- * @version 02.05.2019
- * @author  Дмитрий Щербаков <atomcms@ya.ru>
  */
 class NewCommand extends Command
 {
@@ -60,7 +59,7 @@ class NewCommand extends Command
     protected $directory;
 
     /**
-     * @var string Имя нового проекта
+     * @var string Версия по умолчанию
      */
     protected $default_version = 'master';
 
@@ -94,8 +93,9 @@ class NewCommand extends Command
      *
      * @return void
      *
-     * @version 02.05.2019
      * @author  Дмитрий Щербаков <atomcms@ya.ru>
+     *
+     * @version 30.07.2019
      */
     protected function configure()
     {
@@ -125,12 +125,12 @@ class NewCommand extends Command
                 InputOption::VALUE_NONE,
                 'Install WEB module (client-metronic)'
             )
-            ->addOption(
-                'mobile',
-                null,
-                InputOption::VALUE_NONE,
-                'Install MOBILE module (client-framework7)'
-            )
+            // ->addOption(
+            //     'mobile',
+            //     null,
+            //     InputOption::VALUE_NONE,
+            //     'Install MOBILE module (client-framework7)'
+            // )
             ->addOption(
                 'skip',
                 null,
@@ -153,8 +153,9 @@ class NewCommand extends Command
      *
      * @return void
      *
-     * @version 13.05.2019
      * @author  Дмитрий Щербаков <atomcms@ya.ru>
+     *
+     * @version 30.07.2019
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -186,7 +187,7 @@ class NewCommand extends Command
             '<info>  Version</info> = <comment>' . $this->option_lv . '</comment>',
             '<info>  API module</info> = <comment>' . ($this->option_api ? 'yes' : 'no') . '</comment>',
             '<info>  WEB module</info> = <comment>' . ($this->option_web ? 'yes' : 'no') . '</comment>',
-            '<info>  MOBILE module</info> = <comment>' . ($this->option_mobile ? 'yes' : 'no') . '</comment>',
+            //'<info>  MOBILE module</info> = <comment>' . ($this->option_mobile ? 'yes' : 'no') . '</comment>',
         ]);
 
         if (empty($this->input->getOption('silent'))) {
@@ -210,7 +211,7 @@ class NewCommand extends Command
 
             $this->installModuleApi();
             $this->installModuleWeb();
-            $this->installModuleMobile();
+            //$this->installModuleMobile();
         } catch (Exception $e) {
             $this->output->writeln('<error>' . $e->getMessage() . '</error>');
 
@@ -229,8 +230,9 @@ class NewCommand extends Command
      *
      * @return void
      *
-     * @version 02.05.2019
      * @author  Дмитрий Щербаков <atomcms@ya.ru>
+     *
+     * @version 30.07.2019
      */
     protected function prepareParams()
     {
@@ -239,7 +241,7 @@ class NewCommand extends Command
         $this->option_lv = $this->getOptionLV();
         $this->option_api = $this->getOptionApi();
         $this->option_web = $this->getOptionWeb();
-        $this->option_mobile = $this->getOptionMobile();
+        //$this->option_mobile = $this->getOptionMobile();
 
         $this->directory = getcwd() . DIRECTORY_SEPARATOR . $this->arg_name;
     }
@@ -670,7 +672,8 @@ class NewCommand extends Command
      * @throws Exception
      *
      * @author  Дмитрий Щербаков <atomcms@ya.ru>
-     * @version 02.05.2019
+     *
+     * @version 30.07.2019
      */
     protected function runCommands($commands)
     {
@@ -680,7 +683,7 @@ class NewCommand extends Command
         $progress_bar->start();
 
         try {
-            $process = new Process(implode(' && ', $commands), $this->directory, null, null, null);
+            $process = Process::fromShellCommandline(implode(' && ', $commands), $this->directory, null, null, null);
 
             if ('\\' !== DIRECTORY_SEPARATOR && file_exists('/dev/tty') && is_readable('/dev/tty')) {
                 $process->setTty(true);
