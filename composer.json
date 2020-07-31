@@ -23,7 +23,7 @@
   },
   "require": {
     "ext-zip": "*",
-    "guzzlehttp/guzzle": "7.0.*",
+    "guzzlehttp/guzzle": "6.3.* || 7.0.*",
     "php": "^7.2.5",
     "symfony/console": "5.1.*",
     "symfony/filesystem": "5.1.*",
