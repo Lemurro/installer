@@ -162,7 +162,7 @@ class NewCommand extends Command
         $this->input = $input;
         $this->output = $output;
         $this->question_helper = $this->getHelper('question');
-        $this->filesystem = new Filesystem;
+        $this->filesystem = new Filesystem();
 
         if (!extension_loaded('zip')) {
             $this->output->writeln('<error>The Zip PHP extension is not installed. Please install it and try again</error>');
@@ -553,7 +553,7 @@ class NewCommand extends Command
 
         $url = 'https://github.com/Lemurro/' . $module . '/archive/' . $branch . '.zip';
 
-        file_put_contents($filename, (new Client)->get($url)->getBody());
+        file_put_contents($filename, (new Client())->get($url)->getBody());
 
         if (!is_readable($filename)) {
             throw new Exception('Archive not downloaded');
@@ -581,7 +581,7 @@ class NewCommand extends Command
     {
         $this->output->writeln('Extracting archive...');
 
-        $archive = new ZipArchive;
+        $archive = new ZipArchive();
 
         $archive->open($zip_file_name);
         $archive->extractTo($this->directory);
