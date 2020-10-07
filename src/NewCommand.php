@@ -5,7 +5,7 @@
  *
  * @author  Дмитрий Щербаков <atomcms@ya.ru>
  *
- * @version 30.07.2019
+ * @version 07.10.2020
  */
 
 namespace Lemurro\Installer;
@@ -27,8 +27,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
 /**
- * Class NewCommand
- *
  * @package Lemurro\Installer
  */
 class NewCommand extends Command
@@ -146,18 +144,11 @@ class NewCommand extends Command
     }
 
     /**
-     * Выполняем команду
-     *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return void
-     *
      * @author  Дмитрий Щербаков <atomcms@ya.ru>
      *
-     * @version 30.07.2019
+     * @version 07.10.2020
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->input = $input;
         $this->output = $output;
@@ -167,7 +158,7 @@ class NewCommand extends Command
         if (!extension_loaded('zip')) {
             $this->output->writeln('<error>The Zip PHP extension is not installed. Please install it and try again</error>');
 
-            return;
+            return 500;
         }
 
         $this->prepareParams();
@@ -199,7 +190,7 @@ class NewCommand extends Command
                 $this->output->writeln('');
                 $this->output->writeln('Installation aborted by user');
 
-                return;
+                return 0;
             }
         }
 
@@ -215,7 +206,7 @@ class NewCommand extends Command
         } catch (Exception $e) {
             $this->output->writeln('<error>' . $e->getMessage() . '</error>');
 
-            return;
+            return 500;
         }
 
         $this->output->writeln([
@@ -223,6 +214,8 @@ class NewCommand extends Command
             '<info>Application ready!</info>',
             'https://lemurro.github.io/docs',
         ]);
+
+        return 0;
     }
 
     /**
