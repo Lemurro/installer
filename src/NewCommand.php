@@ -1,11 +1,9 @@
 <?php
 
 /**
- * Основная команда
- *
  * @author  Дмитрий Щербаков <atomcms@ya.ru>
  *
- * @version 07.10.2020
+ * @version 10.11.2020
  */
 
 namespace Lemurro\Installer;
@@ -55,11 +53,6 @@ class NewCommand extends Command
      * @var string Каталог, где мы находимся
      */
     protected $directory;
-
-    /**
-     * @var string Версия по умолчанию
-     */
-    protected $default_version = 'master';
 
     /**
      * @var string Имя нового проекта
@@ -146,7 +139,7 @@ class NewCommand extends Command
     /**
      * @author  Дмитрий Щербаков <atomcms@ya.ru>
      *
-     * @version 07.10.2020
+     * @version 10.11.2020
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -156,7 +149,9 @@ class NewCommand extends Command
         $this->filesystem = new Filesystem();
 
         if (!extension_loaded('zip')) {
-            $this->output->writeln('<error>The Zip PHP extension is not installed. Please install it and try again</error>');
+            $this->output->writeln('<error>                                                                           </error>');
+            $this->output->writeln('<error>  The Zip PHP extension is not installed. Please install it and try again  </error>');
+            $this->output->writeln('<error>                                                                           </error>');
 
             return 500;
         }
@@ -184,7 +179,7 @@ class NewCommand extends Command
         if (empty($this->input->getOption('silent'))) {
             $this->output->writeln('');
 
-            $question = new Question('<comment>Continue installation (y|n): </comment>', 'n');
+            $question = new Question('<comment>Continue installation (y|n) {default: n}: </comment>', 'n');
             $answer = strtolower(trim($this->question_helper->ask($this->input, $this->output, $question)));
             if ($answer !== 'y') {
                 $this->output->writeln('');
@@ -204,7 +199,12 @@ class NewCommand extends Command
             $this->installModuleWeb();
             //$this->installModuleMobile();
         } catch (Exception $e) {
-            $this->output->writeln('<error>' . $e->getMessage() . '</error>');
+            $length = mb_strlen($e->getMessage(), 'UTF-8') + 4;
+            $separator = str_pad('', $length);
+
+            $this->output->writeln('<error>' . $separator . '</error>');
+            $this->output->writeln('<error>  ' . $e->getMessage() . '  </error>');
+            $this->output->writeln('<error>' . $separator . '</error>');
 
             return 500;
         }
@@ -257,27 +257,28 @@ class NewCommand extends Command
      *
      * @return string
      *
-     * @version 02.05.2019
      * @author  Дмитрий Щербаков <atomcms@ya.ru>
+     *
+     * @version 10.11.2020
      */
     protected function getOptionLV()
     {
         if (empty($this->input->getOption('lv'))) {
-            $question = new Question(
-                '<comment>Lemurro version (latest|X.Y.Z|vX.Y.Z) {default: latest}: </comment>',
-                'latest'
-            );
-
+            $question = new Question('<comment>Lemurro version (X.Y|vX.Y): </comment>');
             $version = $this->question_helper->ask($this->input, $this->output, $question);
         } else {
             $version = $this->input->getOption('lv');
         }
 
-        if (preg_match('/(\d+\.\d+\.\d+)/', $version, $matches)) {
-            return $matches[1];
+        if (preg_match('/(\d+\.\d+)/', $version, $matches)) {
+            return $matches[1] . '.0';
         }
 
-        return $this->default_version;
+        $this->output->writeln('<error>                                                        </error>');
+        $this->output->writeln('<error>  Expected string in format "X.Y" or "vX.Y", try again  </error>');
+        $this->output->writeln('<error>                                                        </error>');
+
+        return $this->getOptionLV();
     }
 
     /**
@@ -285,13 +286,14 @@ class NewCommand extends Command
      *
      * @return boolean
      *
-     * @version 02.05.2019
      * @author  Дмитрий Щербаков <atomcms@ya.ru>
+     *
+     * @version 10.11.2020
      */
     protected function getOptionApi()
     {
         if (empty($this->input->getOption('api')) && empty($this->input->getOption('skip'))) {
-            $question = new Question('<comment>Install API module (y|n): </comment>', 'y');
+            $question = new Question('<comment>Install API module (y|n) {default: y}: </comment>', 'y');
             $answer = $this->question_helper->ask($this->input, $this->output, $question);
 
             return $this->getOptionResult($answer);
@@ -305,13 +307,14 @@ class NewCommand extends Command
      *
      * @return boolean
      *
-     * @version 02.05.2019
      * @author  Дмитрий Щербаков <atomcms@ya.ru>
+     *
+     * @version 10.11.2020
      */
     protected function getOptionWeb()
     {
         if (empty($this->input->getOption('web')) && empty($this->input->getOption('skip'))) {
-            $question = new Question('<comment>Install WEB module (client-metronic) (y|n): </comment>', 'y');
+            $question = new Question('<comment>Install WEB module (client-metronic) (y|n) {default: y}: </comment>', 'y');
             $answer = $this->question_helper->ask($this->input, $this->output, $question);
 
             return $this->getOptionResult($answer);
@@ -325,13 +328,14 @@ class NewCommand extends Command
      *
      * @return boolean
      *
-     * @version 02.05.2019
      * @author  Дмитрий Щербаков <atomcms@ya.ru>
+     *
+     * @version 10.11.2020
      */
     protected function getOptionMobile()
     {
         if (empty($this->input->getOption('mobile')) && empty($this->input->getOption('skip'))) {
-            $question = new Question('<comment>Install MOBILE module (client-framework7) (y|n): </comment>', 'y');
+            $question = new Question('<comment>Install MOBILE module (client-framework7) (y|n) {default: y}: </comment>', 'y');
             $answer = $this->question_helper->ask($this->input, $this->output, $question);
 
             return $this->getOptionResult($answer);
@@ -532,27 +536,21 @@ class NewCommand extends Command
      * @throws Exception
      *
      * @author  Дмитрий Щербаков <atomcms@ya.ru>
-     * @version 02.05.2019
+     *
+     * @version 10.11.2020
      */
     protected function download($module, $filename)
     {
         $this->output->writeln('Downloading archive...');
 
-        $branch = $this->option_lv;
-
-        if ($branch !== $this->default_version) {
-            $branch = 'v' . $branch;
-        }
-
-        $url = 'https://github.com/Lemurro/' . $module . '/archive/' . $branch . '.zip';
-
+        $url = "https://github.com/Lemurro/$module/archive/v$this->option_lv.zip";
         file_put_contents($filename, (new Client())->get($url)->getBody());
 
         if (!is_readable($filename)) {
             throw new Exception('Archive not downloaded');
         }
 
-        $this->output->writeln('Archive successfully downloaded');
+        $this->output->writeln('   Archive successfully downloaded');
 
         return $this;
     }
@@ -567,8 +565,9 @@ class NewCommand extends Command
      *
      * @throws Exception
      *
-     * @version 02.05.2019
      * @author  Дмитрий Щербаков <atomcms@ya.ru>
+     *
+     * @version 10.11.2020
      */
     protected function extract($zip_file_name, $folder)
     {
@@ -584,7 +583,7 @@ class NewCommand extends Command
             throw new Exception('Archive not extracted');
         }
 
-        $this->output->writeln('Archive successfully extracted');
+        $this->output->writeln('   Archive successfully extracted');
 
         return $this;
     }
@@ -599,8 +598,9 @@ class NewCommand extends Command
      *
      * @throws Exception
      *
-     * @version 02.05.2019
      * @author  Дмитрий Щербаков <atomcms@ya.ru>
+     *
+     * @version 10.11.2020
      */
     protected function prepareFolder($module, $folder)
     {
@@ -629,7 +629,7 @@ class NewCommand extends Command
         try {
             $this->filesystem->rename($folder, $module_dir . $newname);
 
-            $this->output->writeln('Folder successfully prepared');
+            $this->output->writeln('   Folder successfully prepared');
         } catch (IOExceptionInterface $e) {
             $this->output->writeln('<comment>Directory is not renamed, you can rename the directory "/' . $module . '" manually to  "' . $newname . '"</comment>');
         }
@@ -666,7 +666,7 @@ class NewCommand extends Command
      *
      * @author  Дмитрий Щербаков <atomcms@ya.ru>
      *
-     * @version 30.07.2019
+     * @version 10.11.2020
      */
     protected function runCommands($commands)
     {
@@ -700,7 +700,7 @@ class NewCommand extends Command
         $progress_bar->finish();
 
         $this->output->writeln('');
-        $this->output->writeln('Commands successfully executed');
+        $this->output->writeln('   Commands successfully executed');
 
         return $this;
     }
