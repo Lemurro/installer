@@ -3,7 +3,7 @@
 /**
  * @author  Дмитрий Щербаков <atomcms@ya.ru>
  *
- * @version 10.11.2020
+ * @version 13.11.2020
  */
 
 namespace Lemurro\Installer;
@@ -259,24 +259,30 @@ class NewCommand extends Command
      *
      * @author  Дмитрий Щербаков <atomcms@ya.ru>
      *
-     * @version 10.11.2020
+     * @version 13.11.2020
      */
     protected function getOptionLV()
     {
         if (empty($this->input->getOption('lv'))) {
             $question = new Question('<comment>Lemurro version (X.Y|vX.Y): </comment>');
             $version = $this->question_helper->ask($this->input, $this->output, $question);
+            $exception_in_fail = false;
         } else {
             $version = $this->input->getOption('lv');
+            $exception_in_fail = true;
         }
 
         if (preg_match('/(\d+\.\d+)/', $version, $matches)) {
             return $matches[1] . '.0';
         }
 
-        $this->output->writeln('<error>                                                        </error>');
-        $this->output->writeln('<error>  Expected string in format "X.Y" or "vX.Y", try again  </error>');
-        $this->output->writeln('<error>                                                        </error>');
+        if ($exception_in_fail) {
+            throw new Exception('Expected string in format "X.Y" or "vX.Y", try again');
+        } else {
+            $this->output->writeln('<error>                                                        </error>');
+            $this->output->writeln('<error>  Expected string in format "X.Y" or "vX.Y", try again  </error>');
+            $this->output->writeln('<error>                                                        </error>');
+        }
 
         return $this->getOptionLV();
     }
