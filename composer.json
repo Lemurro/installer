@@ -19,21 +19,32 @@
     "bin/lemurro"
   ],
   "scripts": {
-    "phpcs": "phpcs -nsp ./bin ./src --runtime-set testVersion 7.4 --standard=PHPCompatibility --standard=PSR1 --standard=PSR12 --runtime-set installed_paths ./vendor/phpcompatibility/php-compatibility/PHPCompatibility --report=xml --report-file=./phpcs-report.xml"
+    "phpcs74": "phpcs -nsp ./bin ./src --runtime-set testVersion 7.4 --standard=PHPCompatibility --standard=PSR1 --standard=PSR12 --runtime-set installed_paths ./vendor/phpcompatibility/php-compatibility/PHPCompatibility --report=xml --report-file=./phpcs-report.xml",
+    "phpcs80": "phpcs -nsp ./bin ./src --runtime-set testVersion 8.0 --standard=PHPCompatibility --standard=PSR1 --standard=PSR12 --runtime-set installed_paths ./vendor/phpcompatibility/php-compatibility/PHPCompatibility --report=xml --report-file=./phpcs-report.xml"
   },
   "config": {
     "sort-packages": true
   },
   "require": {
+    "ext-ctype": "*",
+    "ext-intl": "*",
     "ext-zip": "*",
+    "ext-mbstring": "*",
     "guzzlehttp/guzzle": "6.3.* || 7.0.*",
-    "php": "^7.2.5",
-    "symfony/console": "5.1.*",
-    "symfony/filesystem": "5.1.*",
-    "symfony/process": "5.1.*"
+    "php": "7.4.* || 8.0.*",
+    "symfony/console": "5.2.*",
+    "symfony/filesystem": "5.2.*",
+    "symfony/process": "5.2.*"
   },
   "require-dev": {
     "phpcompatibility/php-compatibility": "^9.3",
-    "symfony/var-dumper": "5.1.*"
+    "symfony/var-dumper": "^5.2"
+  },
+  "replace": {
+    "symfony/polyfill-ctype": "*",
+    "symfony/polyfill-intl-grapheme": "*",
+    "symfony/polyfill-intl-normalizer": "*",
+    "symfony/polyfill-mbstring": "*",
+    "symfony/polyfill-php73": "*"
   }
 }

@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @author  Дмитрий Щербаков <atomcms@ya.ru>
- *
- * @version 13.11.2020
- */
-
 namespace Lemurro\Installer;
 
 use Exception;
@@ -24,71 +18,44 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
-/**
- * @package Lemurro\Installer
- */
 class NewCommand extends Command
 {
-    /**
-     * @var InputInterface
-     */
-    protected $input;
+    protected InputInterface $input;
+    protected OutputInterface $output;
+    protected QuestionHelper $question_helper;
+    protected Filesystem $filesystem;
 
     /**
-     * @var OutputInterface
+     * Каталог, где мы находимся
      */
-    protected $output;
+    protected string $directory;
 
     /**
-     * @var QuestionHelper
+     * Имя нового проекта
      */
-    protected $question_helper;
+    protected string $arg_name;
 
     /**
-     * @var Filesystem
+     * Версия Lemurro для установки
      */
-    protected $filesystem;
+    protected string $option_lv;
 
     /**
-     * @var string Каталог, где мы находимся
+     * Установить модуль API
      */
-    protected $directory;
+    protected bool $option_api;
 
     /**
-     * @var string Имя нового проекта
+     * Установить модуль WEB (client-metronic)
      */
-    protected $arg_name;
+    protected bool $option_web;
 
     /**
-     * @var string Версия Lemurro для установки
+     * Установить модуль MOBILE (client-framework7)
      */
-    protected $option_lv;
+    protected bool $option_mobile;
 
-    /**
-     * @var boolean Установить модуль API
-     */
-    protected $option_api;
-
-    /**
-     * @var boolean Установить модуль WEB (client-metronic)
-     */
-    protected $option_web;
-
-    /**
-     * @var boolean Установить модуль MOBILE (client-framework7)
-     */
-    protected $option_mobile;
-
-    /**
-     * Конфигурация команды
-     *
-     * @return void
-     *
-     * @author  Дмитрий Щербаков <atomcms@ya.ru>
-     *
-     * @version 30.07.2019
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('new')
@@ -136,11 +103,6 @@ class NewCommand extends Command
             );
     }
 
-    /**
-     * @author  Дмитрий Щербаков <atomcms@ya.ru>
-     *
-     * @version 10.11.2020
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->input = $input;
@@ -218,16 +180,7 @@ class NewCommand extends Command
         return 0;
     }
 
-    /**
-     * Подготовим параметры
-     *
-     * @return void
-     *
-     * @author  Дмитрий Щербаков <atomcms@ya.ru>
-     *
-     * @version 30.07.2019
-     */
-    protected function prepareParams()
+    protected function prepareParams(): void
     {
         $this->arg_name = $this->getArgName();
 
@@ -239,29 +192,12 @@ class NewCommand extends Command
         $this->directory = getcwd() . DIRECTORY_SEPARATOR . $this->arg_name;
     }
 
-    /**
-     * Получаем аргумент name
-     *
-     * @return string
-     *
-     * @version 02.05.2019
-     * @author  Дмитрий Щербаков <atomcms@ya.ru>
-     */
-    protected function getArgName()
+    protected function getArgName(): string
     {
         return $this->input->getArgument('name');
     }
 
-    /**
-     * Получаем опцию --lv
-     *
-     * @return string
-     *
-     * @author  Дмитрий Щербаков <atomcms@ya.ru>
-     *
-     * @version 13.11.2020
-     */
-    protected function getOptionLV()
+    protected function getOptionLV(): string
     {
         if (empty($this->input->getOption('lv'))) {
             $question = new Question('<comment>Lemurro version (X.Y|vX.Y): </comment>');
@@ -287,16 +223,7 @@ class NewCommand extends Command
         return $this->getOptionLV();
     }
 
-    /**
-     * Получаем опцию --api
-     *
-     * @return boolean
-     *
-     * @author  Дмитрий Щербаков <atomcms@ya.ru>
-     *
-     * @version 10.11.2020
-     */
-    protected function getOptionApi()
+    protected function getOptionApi(): bool
     {
         if (empty($this->input->getOption('api')) && empty($this->input->getOption('skip'))) {
             $question = new Question('<comment>Install API module (y|n) {default: y}: </comment>', 'y');
@@ -308,16 +235,7 @@ class NewCommand extends Command
         }
     }
 
-    /**
-     * Получаем опцию --web
-     *
-     * @return boolean
-     *
-     * @author  Дмитрий Щербаков <atomcms@ya.ru>
-     *
-     * @version 10.11.2020
-     */
-    protected function getOptionWeb()
+    protected function getOptionWeb(): bool
     {
         if (empty($this->input->getOption('web')) && empty($this->input->getOption('skip'))) {
             $question = new Question('<comment>Install WEB module (client-metronic) (y|n) {default: y}: </comment>', 'y');
@@ -329,16 +247,7 @@ class NewCommand extends Command
         }
     }
 
-    /**
-     * Получаем опцию --mobile
-     *
-     * @return boolean
-     *
-     * @author  Дмитрий Щербаков <atomcms@ya.ru>
-     *
-     * @version 10.11.2020
-     */
-    protected function getOptionMobile()
+    protected function getOptionMobile(): bool
     {
         if (empty($this->input->getOption('mobile')) && empty($this->input->getOption('skip'))) {
             $question = new Question('<comment>Install MOBILE module (client-framework7) (y|n) {default: y}: </comment>', 'y');
@@ -350,17 +259,7 @@ class NewCommand extends Command
         }
     }
 
-    /**
-     * Получаем результат значения опции
-     *
-     * @param string $value
-     *
-     * @return boolean
-     *
-     * @version 02.05.2019
-     * @author  Дмитрий Щербаков <atomcms@ya.ru>
-     */
-    protected function getOptionResult($value)
+    protected function getOptionResult(string $value): bool
     {
         if (strtolower(trim($value)) === 'n') {
             return false;
@@ -369,15 +268,7 @@ class NewCommand extends Command
         return true;
     }
 
-    /**
-     * Проверяем каталог проекта, создаём если он отсутствует
-     *
-     * @return void
-     *
-     * @version 02.05.2019
-     * @author  Дмитрий Щербаков <atomcms@ya.ru>
-     */
-    protected function verifyProjectFolder()
+    protected function verifyProjectFolder(): void
     {
         if (!$this->filesystem->exists($this->directory)) {
             $this->filesystem->mkdir($this->directory, 0755);
@@ -385,16 +276,9 @@ class NewCommand extends Command
     }
 
     /**
-     * Установка модуля API
-     *
-     * @return void
-     *
      * @throws Exception
-     *
-     * @author  Дмитрий Щербаков <atomcms@ya.ru>
-     * @version 02.05.2019
      */
-    protected function installModuleApi()
+    protected function installModuleApi(): void
     {
         if ($this->option_api) {
             $this->output->writeln('');
@@ -424,16 +308,9 @@ class NewCommand extends Command
     }
 
     /**
-     * Установка модуля WEB
-     *
-     * @return void
-     *
      * @throws Exception
-     *
-     * @author  Дмитрий Щербаков <atomcms@ya.ru>
-     * @version 02.05.2019
      */
-    protected function installModuleWeb()
+    protected function installModuleWeb(): void
     {
         if ($this->option_web) {
             $this->output->writeln('');
@@ -463,16 +340,9 @@ class NewCommand extends Command
     }
 
     /**
-     * Установка модуля MOBILE
-     *
-     * @return void
-     *
      * @throws Exception
-     *
-     * @author  Дмитрий Щербаков <atomcms@ya.ru>
-     * @version 02.05.2019
      */
-    protected function installModuleMobile()
+    protected function installModuleMobile(): void
     {
         if ($this->option_mobile) {
             $this->output->writeln('');
@@ -501,51 +371,22 @@ class NewCommand extends Command
         }
     }
 
-    /**
-     * Получаем имя файла архива
-     *
-     * @param string $module
-     *
-     * @return string
-     *
-     * @version 02.05.2019
-     * @author  Дмитрий Щербаков <atomcms@ya.ru>
-     */
-    protected function getZipFilename($module)
+    protected function getZipFilename(string $module): string
     {
         return $this->directory . '/lemurro_' . $module . '_' . md5(time() . uniqid()) . '.zip';
     }
 
-    /**
-     * Получаем имя каталога модуля
-     *
-     * @param string $module
-     *
-     * @return string
-     *
-     * @version 02.05.2019
-     * @author  Дмитрий Щербаков <atomcms@ya.ru>
-     */
-    protected function getFolder($module)
+    protected function getFolder(string $module): string
     {
         return $this->directory . DIRECTORY_SEPARATOR . $module . '-' . $this->option_lv;
     }
 
     /**
-     * Скачиваем архив с GitHub
-     *
-     * @param string $module
-     * @param string $filename
-     *
      * @return $this
      *
      * @throws Exception
-     *
-     * @author  Дмитрий Щербаков <atomcms@ya.ru>
-     *
-     * @version 10.11.2020
      */
-    protected function download($module, $filename)
+    protected function download(string $module, string $filename)
     {
         $this->output->writeln('Downloading archive...');
 
@@ -562,20 +403,11 @@ class NewCommand extends Command
     }
 
     /**
-     * Распаковка архива в каталог
-     *
-     * @param string $zip_file_name
-     * @param string $folder
-     *
      * @return $this
      *
      * @throws Exception
-     *
-     * @author  Дмитрий Щербаков <atomcms@ya.ru>
-     *
-     * @version 10.11.2020
      */
-    protected function extract($zip_file_name, $folder)
+    protected function extract(string $zip_file_name, string $folder)
     {
         $this->output->writeln('Extracting archive...');
 
@@ -595,20 +427,11 @@ class NewCommand extends Command
     }
 
     /**
-     * Подготовка распакованного каталога
-     *
-     * @param string $module
-     * @param string $folder
-     *
      * @return $this
      *
      * @throws Exception
-     *
-     * @author  Дмитрий Щербаков <atomcms@ya.ru>
-     *
-     * @version 10.11.2020
      */
-    protected function prepareFolder($module, $folder)
+    protected function prepareFolder(string $module, string $folder)
     {
         $this->output->writeln('Preparing folder...');
 
@@ -644,16 +467,9 @@ class NewCommand extends Command
     }
 
     /**
-     * Удаление zip-файла
-     *
-     * @param string $zip_file_name
-     *
      * @return $this
-     *
-     * @version 02.05.2019
-     * @author  Дмитрий Щербаков <atomcms@ya.ru>
      */
-    protected function cleanUp($zip_file_name)
+    protected function cleanUp(string $zip_file_name)
     {
         @chmod($zip_file_name, 0777);
         @unlink($zip_file_name);
@@ -662,19 +478,11 @@ class NewCommand extends Command
     }
 
     /**
-     * Выполним набор консольных команд
-     *
-     * @param array $commands
-     *
      * @return $this
      *
      * @throws Exception
-     *
-     * @author  Дмитрий Щербаков <atomcms@ya.ru>
-     *
-     * @version 10.11.2020
      */
-    protected function runCommands($commands)
+    protected function runCommands(array $commands)
     {
         $this->output->writeln('Executing commands...');
 
