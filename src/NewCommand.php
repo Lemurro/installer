@@ -388,17 +388,18 @@ class NewCommand extends Command
      */
     protected function download(string $module, string $filename)
     {
-        $this->output->writeln('Downloading archive...');
+        $this->output->write('Downloading archive...');
 
         $url = "https://github.com/Lemurro/$module/archive/v$this->option_lv.zip";
         file_put_contents($filename, (new Client())->get($url)->getBody());
 
         if (!is_readable($filename)) {
+            $this->output->writeln('');
+
             throw new Exception('Archive not downloaded');
         }
 
-        $this->output->writeln('   Archive successfully downloaded');
-
+        $this->output->writeln(' <info>[OK]</info>');
         return $this;
     }
 
@@ -409,7 +410,7 @@ class NewCommand extends Command
      */
     protected function extract(string $zip_file_name, string $folder)
     {
-        $this->output->writeln('Extracting archive...');
+        $this->output->write('Extracting archive...');
 
         $archive = new ZipArchive();
 
@@ -418,10 +419,12 @@ class NewCommand extends Command
         $archive->close();
 
         if (!is_readable($folder)) {
+            $this->output->writeln('');
+
             throw new Exception('Archive not extracted');
         }
 
-        $this->output->writeln('   Archive successfully extracted');
+        $this->output->writeln(' <info>[OK]</info>');
 
         return $this;
     }
@@ -433,7 +436,7 @@ class NewCommand extends Command
      */
     protected function prepareFolder(string $module, string $folder)
     {
-        $this->output->writeln('Preparing folder...');
+        $this->output->write('Preparing folder...');
 
         $module_dir = pathinfo($folder, PATHINFO_DIRNAME);
 
@@ -458,9 +461,9 @@ class NewCommand extends Command
         try {
             $this->filesystem->rename($folder, $module_dir . $newname);
 
-            $this->output->writeln('   Folder successfully prepared');
+            $this->output->writeln(' <info>[OK]</info>');
         } catch (IOExceptionInterface $e) {
-            $this->output->writeln('<comment>Directory is not renamed, you can rename the directory "/' . $module . '" manually to  "' . $newname . '"</comment>');
+            $this->output->writeln(' <error>Directory is not renamed, you can rename the directory "/' . $module . '" manually to  "' . $newname . '"</error>');
         }
 
         return $this;
@@ -514,7 +517,6 @@ class NewCommand extends Command
         $progress_bar->finish();
 
         $this->output->writeln('');
-        $this->output->writeln('   Commands successfully executed');
 
         return $this;
     }
